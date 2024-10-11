@@ -337,7 +337,11 @@ impl QueryPipeline {
 
         if refit_and_rebalance {
             let _ = self.qbvh.refit(0.0, &mut self.workspace, |handle| {
-                colliders[*handle].compute_aabb()
+                if let Some(collider) = colliders.get(*handle) {
+                    collider.compute_aabb()
+                } else {
+                    Aabb::new_invalid()
+                }
             });
             self.qbvh.rebalance(0.0, &mut self.workspace);
         }
